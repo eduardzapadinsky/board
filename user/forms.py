@@ -14,22 +14,22 @@ class RegistrationForm(forms.Form):
 
     username = forms.CharField(max_length=20, required=True, label="Username",
                                widget=forms.TextInput(attrs={
-                                   "class": "form-control",
+                                   "class": "form-control form-control-lg",
                                    "placeholder": "Username"
                                }))
     first_name = forms.CharField(max_length=20, label="First name",
                                  widget=forms.TextInput(attrs={
-                                     "class": "form-control",
+                                     "class": "form-control form-control-lg",
                                      "placeholder": "First Name"
                                  }))
     email = forms.EmailField(validators=[validate_email], required=True, max_length=100, label="Email",
                              widget=forms.EmailInput(attrs={
-                                 "class": "form-control",
+                                 "class": "form-control form-control-lg",
                                  "placeholder": "Email"
                              }))
     password = forms.CharField(validators=[validate_password], max_length=128, required=True, label="Password",
                                widget=forms.PasswordInput(attrs={
-                                   "class": "form-control",
+                                   "class": "form-control form-control-lg",
                                    "placeholder": "Password"
                                }))
 

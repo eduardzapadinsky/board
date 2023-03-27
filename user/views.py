@@ -55,7 +55,7 @@ def login(request):
             else:
                 messages.warning(request, "Check your name and password")
                 return render(request, "user/login.html", {"form": form})
-            return redirect("product:homepage")
+            # return redirect("product:homepage")
     else:
         form = LoginForm()
     return render(request, "user/login.html", {"form": form})
