@@ -55,7 +55,7 @@ def login(request):
             else:
                 messages.warning(request, "Check your name and password")
                 return render(request, "user/login.html", {"form": form})
-            # return redirect("product:homepage")
+            return redirect("dashboard:board")
     else:
         form = LoginForm()
     return render(request, "user/login.html", {"form": form})
@@ -65,4 +65,4 @@ class Logout(LogoutView):
     """
     Logout user
     """
-    # next_page = "product:homepage"
+    next_page = "dashboard:board"
