@@ -7,8 +7,8 @@ from django.urls import path
 
 from . import views
 
-app_name = "user"
+app_name = "dashboard"
 urlpatterns = [
-    path("", views.Logout.as_view(), name="logout"),
-    path("board/", views.Logout.as_view(), name="logout"),
+    path("", views.CardListView.as_view(), name="homepage"),
+    path("board/", views.CardListView.as_view(), name="board"),
 ]

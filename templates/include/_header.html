@@ -14,6 +14,7 @@
                             <li><a href="{% url "user:login" %}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
                         {% else %}
                             <li><a href="{% url "user:logout" %}"><i class="fas fa-sign-in-alt"></i> Logout</a></li>
+                            <li><a href="{% url "dashboard:board" %}"><i class="fas fa-sign-in-alt"></i> Board</a></li>
                         {% endif %}
                     </ul>
                 </div>

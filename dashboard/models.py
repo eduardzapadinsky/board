@@ -25,9 +25,9 @@ class Card(models.Model):
 
     description: str = models.CharField(max_length=255)
     status: str = models.CharField(max_length=15, choices=STATUS_CHOICES, default=NEW)
-    creator: str = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    executor: str = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    creator: str = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="creator")
+    executor: str = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="executor", null=True,
+                                      blank=True)
     created: datetime = models.DateField(auto_now_add=True)
     updated: datetime = models.DateField(auto_now=True)
     is_deleted: bool = models.BooleanField(default=False)
-
