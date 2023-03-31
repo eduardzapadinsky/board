@@ -28,7 +28,7 @@ def register(request):
                 auth.login(request, user)
                 user.is_active = True
                 user.save()
-                # return redirect("product:homepage")
+                return redirect("dashboard:board")
         else:
             messages.warning(request, "Fill in the fields correctly")
 

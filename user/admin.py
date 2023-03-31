@@ -8,4 +8,4 @@ class UserAdmin(admin.ModelAdmin):
     """
     Admin panel: User
     """
-    # list_display = ["email", "wallet"]
+    list_display = ["id", "username"]

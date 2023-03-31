@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView
@@ -50,9 +50,13 @@ def card_move_right(request, pk, *args):
     return redirect("dashboard:board")
 
 
-class CardCreateView(LoginRequiredMixin, CreateView):
+class CardCreateView(LoginRequiredMixin, View):
     form_class = CardForm
     template_name = "dashboard/card_form.html"
+
+    def get(self, request):
+        form = CardForm(request.POST, user=request.user)
+        return render(request, "dashboard/card_form.html", {"form": form})
 
     def post(self, request, *args, **kwargs):
         form = CardForm(request.POST)
@@ -62,25 +66,70 @@ class CardCreateView(LoginRequiredMixin, CreateView):
             cd = form.cleaned_data
             description = cd["description"]
             executor = cd["executor"]
+            # executor_status = request.POST.get("executorr", False)
+            # if executor_status:
+            #     executor = creator
+            # else:
+            #     executor = None
             Card.objects.update_or_create(
                 creator=creator,
                 description=description,
                 executor=executor
             )
-        return redirect("dashboard:card-create")
+            return redirect("dashboard:board")
+        else:
+            return redirect("dashboard:card-create")
 
     def get_success_url(self):
         return redirect("dashboard:board")
 
 
-class CardUpdateView(UpdateView):
-    """
-    ToDo
+# class CardUpdateView(View):
+#     """
+#     ToDo
+#
+#     """
+#     model = Card
+#     form_class = CardForm
+#     template_name = "dashboard/card_form.html"
+#
+#
+#     def get_success_url(self):
+#         return reverse("dashboard:board")
 
-    """
-    model = Card
+class CardUpdateView(View):
     form_class = CardForm
     template_name = "dashboard/card_form.html"
 
+    def get(self, request, pk):
+        print(request)
+        card = Card.objects.get(pk=pk)
+        form = CardForm(instance=card, user=request.user)
+        return render(request, "dashboard/card_form.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = CardForm(request.POST)
+        creator = UserModel.objects.get(id=request.user.id)
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            description = cd["description"]
+            executor = cd["executor"]
+            # executor_status = request.POST.get("executorr", False)
+            # if executor_status:
+            #     executor = creator
+            # else:
+            #     executor = None
+            card = Card.objects.get(pk=id)
+            # Card.objects.update_or_create(
+            #     id=card.id,
+            #     creator=creator,
+            #     description=description,
+            #     executor=executor
+            # )
+            return redirect("dashboard:board")
+        else:
+            return redirect("dashboard:card-create")
+
     def get_success_url(self):
-        return reverse("dashboard:board")
+        return redirect("dashboard:board")
