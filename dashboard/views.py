@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
@@ -6,9 +6,18 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from user.models import UserModel
 from .models import Card
-from .forms import CardForm
+from .forms import CardForm, CardFormSuperuser
 
 CARD_LIST_STATUS = Card.STATUS_CHOICES
+
+
+class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """
+    Superuser-only permission
+    """
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 class CardListView(LoginRequiredMixin, ListView):
@@ -50,14 +59,14 @@ def card_move_right(request, pk, *args):
     return redirect("dashboard:board")
 
 
-class CardCreateView(LoginRequiredMixin, View):
+class CardCreateView(LoginRequiredMixin, CreateView):
     form_class = CardForm
     template_name = "dashboard/card_form.html"
 
-    def get(self, request):
-        form = CardForm(request.POST, user=request.user)
-        return render(request, "dashboard/card_form.html", {"form": form})
-
+    # def get(self, request):
+    #     form = CardForm(request.POST, user=request.user)
+    #     return render(request, "dashboard/card_form.html", {"form": form})
+    #
     def post(self, request, *args, **kwargs):
         form = CardForm(request.POST)
         creator = UserModel.objects.get(id=request.user.id)
@@ -65,12 +74,12 @@ class CardCreateView(LoginRequiredMixin, View):
         if form.is_valid():
             cd = form.cleaned_data
             description = cd["description"]
-            executor = cd["executor"]
-            # executor_status = request.POST.get("executorr", False)
-            # if executor_status:
-            #     executor = creator
-            # else:
-            #     executor = None
+            # executor = cd["executor"]
+            executor_status = request.POST.get("executor", False)
+            if executor_status:
+                executor = creator
+            else:
+                executor = None
             Card.objects.update_or_create(
                 creator=creator,
                 description=description,
@@ -97,39 +106,62 @@ class CardCreateView(LoginRequiredMixin, View):
 #     def get_success_url(self):
 #         return reverse("dashboard:board")
 
-class CardUpdateView(View):
+# class CardUpdateView(UpdateView):
+#     model = Card
+#     form_class = CardForm
+#     template_name = "dashboard/card_form.html"
+
+class CardUpdateView(LoginRequiredMixin, UpdateView):
+    model = Card
     form_class = CardForm
     template_name = "dashboard/card_form.html"
 
-    def get(self, request, pk):
-        print(request)
-        card = Card.objects.get(pk=pk)
-        form = CardForm(instance=card, user=request.user)
-        return render(request, "dashboard/card_form.html", {"form": form})
+    # def get(self, request, pk):
+    #     print(request)
+    #     card = Card.objects.get(pk=pk)
+    #     form = CardForm(instance=card, user=request.user)
+    #     return render(request, "dashboard/card_form.html", {"form": form})
+    #
+    # def put(self, request, *args, **kwargs):
+    #     form = CardForm(request.POST)
+    #     card = Card.objects.get(pk=kwargs["pk"])
 
-    def post(self, request, *args, **kwargs):
-        form = CardForm(request.POST)
-        creator = UserModel.objects.get(id=request.user.id)
+    # if form.is_valid():
+    #     cd = form.cleaned_data
+    #     description = cd["description"]
+    #     executor_status = request.POST.get("executor", False)
+    #     if executor_status:
+    #         executor = card.creator
+    #     else:
+    #         executor = None
+    #     card["description"] = description
+    #     card["executor"] = executor
+    #     card.save()
+    #     return redirect("dashboard:board")
+    # else:
+    #     return redirect("dashboard:card-create")
 
-        if form.is_valid():
-            cd = form.cleaned_data
-            description = cd["description"]
-            executor = cd["executor"]
-            # executor_status = request.POST.get("executorr", False)
-            # if executor_status:
-            #     executor = creator
-            # else:
-            #     executor = None
-            card = Card.objects.get(pk=id)
-            # Card.objects.update_or_create(
-            #     id=card.id,
-            #     creator=creator,
-            #     description=description,
-            #     executor=executor
-            # )
-            return redirect("dashboard:board")
+    def form_valid(self, form):
+        executor_status = self.request.POST.get("executor", False)
+        creator = self.object.creator
+
+        if executor_status:
+            executor = creator
         else:
-            return redirect("dashboard:card-create")
+            executor = None
+        form.instance.executor = executor
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context["object"].executor)
+        return context
 
     def get_success_url(self):
-        return redirect("dashboard:board")
+        return reverse("dashboard:board")
+
+
+class CardUpdateViewSuperuser(SuperuserRequiredMixin, UpdateView):
+    model = Card
+    form_class = CardFormSuperuser
+    template_name = "dashboard/card_form.html"
