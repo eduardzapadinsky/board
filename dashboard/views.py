@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from user.models import UserModel
 from .models import Card
@@ -18,6 +18,15 @@ class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+class SuperuserRestrictedMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """
+    Deny permission for superuser
+    """
+
+    def test_func(self):
+        return not self.request.user.is_superuser
 
 
 class CardListView(LoginRequiredMixin, ListView):
@@ -59,7 +68,7 @@ def card_move_right(request, pk, *args):
     return redirect("dashboard:board")
 
 
-class CardCreateView(LoginRequiredMixin, CreateView):
+class CardCreateView(SuperuserRestrictedMixin, LoginRequiredMixin, CreateView):
     form_class = CardForm
     template_name = "dashboard/card_form.html"
 
@@ -152,10 +161,9 @@ class CardUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.executor = executor
         return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(context["object"].executor)
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     return context
 
     def get_success_url(self):
         return reverse("dashboard:board")
@@ -165,3 +173,11 @@ class CardUpdateViewSuperuser(SuperuserRequiredMixin, UpdateView):
     model = Card
     form_class = CardFormSuperuser
     template_name = "dashboard/card_form.html"
+
+    def get_success_url(self):
+        return reverse("dashboard:board")
+
+
+class CardDeleteView(SuperuserRequiredMixin, DeleteView):
+    model = Card
+    success_url = reverse_lazy("dashboard:board")

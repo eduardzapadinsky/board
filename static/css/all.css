@@ -51,8 +51,10 @@ body {
 }
 
 .dash-author {
+    color: #757575;;
     text-align: right;
     font-size: 10px;
+    font-weight: bold;
 }
 
 .btn-move {
@@ -75,6 +77,16 @@ body {
     left: 50%;
     transform: translateX(-50%);
 }
+.top-center-left {
+    top: 0;
+    left: 40%;
+    transform: translateX(-40%);
+}
+.top-center-right {
+    top: 0;
+    left: 60%;
+    transform: translateX(-60%);
+}
 
 .bottom-center {
     bottom: 0;
@@ -94,4 +106,12 @@ body {
     font-size: 13px;
     font-weight: bold;
     margin: 2px;
+}
+
+.normal-text {
+    font-weight: normal;
+}
+
+.bold-text {
+    font-weight: bold;
 }

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+    <div class="mask d-flex align-items-center h-100">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                    <div class="card" style="border-radius: 15px;">
+                        <div class="card-body p-5">
+                            <h2 class="text-uppercase text-center mb-5">
+                                Delete card
+                            </h2>
+                            <form method="post">
+                                {% csrf_token %}
+                                <p>You really want to delete card "<span
+                                        class="bold-text">{{ object.description }}</span>"
+                                    from the <span class="bold-text">{{ object.creator }}</span>?</p>
+                                {{ form }}
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit"
+                                            class="btn btn-primary btn-block btn-lg">
+                                        Confirm
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
