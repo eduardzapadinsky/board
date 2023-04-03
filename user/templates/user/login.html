@@ -9,7 +9,8 @@
                 <div class="col-12 col-md-9 col-lg-7 col-xl-6">
                     <div class="card" style="border-radius: 15px;">
                         <div class="card-body p-5">
-                            <h2 class="text-uppercase text-center mb-5">Log in</h2>
+                            <h2 class="text-uppercase text-center mb-2">Log in</h2>
+                            <h6 class="mb-4" style="color:darkred">You are not authorized. Please log in.</h6>
                             {% if messages %}
                                 <ul class="messagelist">
                                     {% for message in messages %}
@@ -31,7 +32,7 @@
                                 </div>
                                 <div class="d-flex justify-content-center">
                                     <button type="submit"
-                                            class="btn btn-primary btn-block btn-lg">
+                                            class="btn btn-info btn-block btn-lg">
                                         Log in
                                     </button>
                                 </div>

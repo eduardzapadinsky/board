@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # Middleware to expire sessions after specific amount of time
-    'board.logout_middleware.SessionTimeoutMiddleware',
+    # 'board.logout_middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'board.urls'

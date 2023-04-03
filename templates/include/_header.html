@@ -1,76 +1,34 @@
 {% load static %}
 
-<!-- Start Main Top -->
-<div class="main-top">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="our-link">
-                    <ul>
-                        {% if not user.is_authenticated %}
-                            <li><a href="{% url "user:register" %}"><i class="fa fa-registered s_color"></i>
-                                Register</a>
-                            </li>
-                            <li><a href="{% url "user:login" %}"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
-                        {% else %}
-                            <li><a href="{% url "user:logout" %}"><i class="fas fa-sign-in-alt"></i> Logout</a></li>
-                            <li><a href="{% url "dashboard:board" %}"><i class="fas fa-sign-in-alt"></i> Board</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- End Main Top -->
+<div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+        </a>
 
-{#<!-- Start Main Top -->#}
-{#<header class="main-header">#}
-{#    <!-- Start Navigation -->#}
-{#    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-default bootsnav">#}
-{#        <div class="container">#}
-{#            <!-- Start Header Navigation -->#}
-{#            <div class="navbar-header">#}
-{#                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu"#}
-{#                        aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">#}
-{#                    <i class="fa fa-bars"></i>#}
-{#                </button>#}
-{#                <a class="navbar-brand" href="{% url "product:homepage" %}"><img src="{% static "images/logo.png" %}"#}
-{#                                                                                 class="logo" alt="logo" height="60px"></a>#}
-{#            </div>#}
-{#            <!-- End Header Navigation -->#}
-{##}
-{#            <!-- Collect the nav links, forms, and other content for toggling -->#}
-{#            <div class="collapse navbar-collapse" id="navbar-menu">#}
-{#                <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">#}
-{#                    <li class="nav-item {% if 'products' in request.path or request.path == "/" %}active {% endif %}">#}
-{#                        <a class="nav-link" href="{% url "product:homepage" %}">Shop</a></li>#}
-{#                    {% if user.is_authenticated %}#}
-{#                            <li class="nav-item {% if 'orders' in request.path and not 'refund' in request.path %}active{% endif %}">#}
-{#                                <a#}
-{#                                        class="nav-link"#}
-{#                                        href="{% url "order:order-list" %}">Orders</a>#}
-{#                            </li>#}
-{#                        <li class="nav-item  {% if 'refund' in request.path %}active{% endif %}"><a#}
-{#                                class="nav-link"#}
-{#                                href="{% url "order:refund-list" %}">Refunds</a>#}
-{#                        </li>#}
-{#                    {% endif %}#}
-{#                </ul>#}
-{#            </div>#}
-{#            <!-- /.navbar-collapse -->#}
-{##}
-{#            <!-- Start Atribute Navigation -->#}
-{#            {% if user.is_authenticated and not user.is_superuser %}#}
-{#                <div class="attr-nav">#}
-{#                    <ul>#}
-{#                        <li class="nav-item"><a class="nav-link">Wallet: {{ user.wallet }}</a></li>#}
-{#                    </ul>#}
-{#                </div>#}
-{#            {% endif %}#}
-{#            <!-- End Atribute Navigation -->#}
-{#        </div>#}
-{#    </nav>#}
-{#    <!-- End Navigation -->#}
-{#</header>#}
-{##}
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="{% url "dashboard:board" %}"><i class="fas fa-sign-in-alt"></i>Board</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+            {% if not user.is_authenticated %}
+                <a class="btn {% if "login" in request.path %} btn-primary {% else %} btn-outline-primary me-2 {% endif %}"
+                   href="{% url "user:login" %}">
+                    Log in
+                </a>
+                <a class="btn {% if "register" in request.path %} btn-primary {% else %} btn-outline-primary me-2 {% endif %}"
+                   href="{% url "user:register" %}">
+                    Register
+                </a>
+            {% else %}
+                <a class="btn btn-outline-primary me-2" href="{% url "user:logout" %}">
+                    Logout
+                </a>
+            {% endif %}
+
+        </div>
+    </header>
+</div>
+

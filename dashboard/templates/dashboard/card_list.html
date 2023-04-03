@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <div class="container" style="height: 100%; width: 100%">
+    <div class="container">
         {% if not user.is_superuser %}
             <a class="" href="{% url "dashboard:card-create" %}">
                 <button type="button" class="row btn-add btn btn-light" style="margin-left: -7px">
@@ -16,9 +16,9 @@
                 </button>
             </a>
         {% endif %}
-        <div class="row" style="height: 100%; width: 100%">
+        <div class="row">
             {% for card_status, card_status_name in card_list_status %}
-                <div class="dash-title col container" style="height: 80%; width: 80%">
+                <div class="dash-title col container">
                     {{ card_status_name }}
                     {% for card in card_list %}
                         {% if card.status == card_status and not card.is_deleted %}
