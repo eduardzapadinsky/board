@@ -48,11 +48,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'board.custom_middleware.AutoLogoutMiddleware',
-    # 'board.c_middleware.AutoLogoutMiddleware',
-    # 'board.c_middleware.WebfactionFixMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',
+
+    # Middleware to expire sessions after specific amount of time
+    'board.logout_middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'board.urls'
@@ -132,5 +130,3 @@ STATICFILES_DIRS = [STATIC_DIR]
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SESSION_EXPIRE_SECONDS = 60
