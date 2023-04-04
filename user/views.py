@@ -2,9 +2,16 @@ from django.contrib.auth.views import LogoutView
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib import messages
+from rest_framework import viewsets
 
 from .models import UserModel
 from .forms import RegistrationForm, LoginForm
+from .serializers import UserSerializer
+
+
+class UserView(viewsets.ModelViewSet):
+    queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
 
 
 def register(request):

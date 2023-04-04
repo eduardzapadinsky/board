@@ -17,9 +17,18 @@ from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.urls import path, include
+from rest_framework import routers
+from rest_framework.authtoken import views
+
+from user.views import UserView
+
+router = routers.DefaultRouter()
+router.register("user", UserView)
 
 urlpatterns = [
                   path("admin/", admin.site.urls),
+                  path('api/auth/', views.obtain_auth_token),
+                  path('api/', include(router.urls)),
                   path("", include("user.urls", namespace="user")),
                   path("", include("dashboard.urls", namespace="dashboard")),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
