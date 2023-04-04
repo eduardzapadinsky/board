@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.core.exceptions import PermissionDenied
 
 from user.models import UserModel
 from .models import Card
@@ -47,12 +48,14 @@ def card_move(pk):
     card_status = card.status
     card_list_status_name = [i[0] for i in CARD_LIST_STATUS]
     card_status_index = card_list_status_name.index(card_status)
-    return card, card_list_status_name, card_status_index
+    return card, card_status, card_list_status_name, card_status_index
 
 
 def card_move_left(request, pk):
-    card, card_list_status_name, card_status_index = card_move(pk)
-    if card_status_index != 0:
+    card, card_status, card_list_status_name, card_status_index = card_move(pk)
+    if card_status not in [
+        "New", "Done"
+    ] and card.executor == request.user or card_status == "Done" and request.user.is_superuser:
         next_cart_status = card_list_status_name[card_status_index - 1]
         card.status = next_cart_status
         card.save()
@@ -60,8 +63,10 @@ def card_move_left(request, pk):
 
 
 def card_move_right(request, pk, *args):
-    card, card_list_status_name, card_status_index = card_move(pk)
-    if card_status_index != len(card_list_status_name) - 1:
+    card, card_status, card_list_status_name, card_status_index = card_move(pk)
+    if card_status not in [
+        "Ready", "Done"
+    ] and card.executor == request.user or card_status == "Ready" and request.user.is_superuser:
         next_cart_status = card_list_status_name[card_status_index + 1]
         card.status = next_cart_status
         card.save()
@@ -72,10 +77,6 @@ class CardCreateView(SuperuserRestrictedMixin, LoginRequiredMixin, CreateView):
     form_class = CardForm
     template_name = "dashboard/card_form.html"
 
-    # def get(self, request):
-    #     form = CardForm(request.POST, user=request.user)
-    #     return render(request, "dashboard/card_form.html", {"form": form})
-    #
     def post(self, request, *args, **kwargs):
         form = CardForm(request.POST)
         creator = UserModel.objects.get(id=request.user.id)
@@ -83,7 +84,6 @@ class CardCreateView(SuperuserRestrictedMixin, LoginRequiredMixin, CreateView):
         if form.is_valid():
             cd = form.cleaned_data
             description = cd["description"]
-            # executor = cd["executor"]
             executor_status = request.POST.get("executor", False)
             if executor_status:
                 executor = creator
@@ -102,68 +102,24 @@ class CardCreateView(SuperuserRestrictedMixin, LoginRequiredMixin, CreateView):
         return redirect("dashboard:board")
 
 
-# class CardUpdateView(View):
-#     """
-#     ToDo
-#
-#     """
-#     model = Card
-#     form_class = CardForm
-#     template_name = "dashboard/card_form.html"
-#
-#
-#     def get_success_url(self):
-#         return reverse("dashboard:board")
-
-# class CardUpdateView(UpdateView):
-#     model = Card
-#     form_class = CardForm
-#     template_name = "dashboard/card_form.html"
-
 class CardUpdateView(LoginRequiredMixin, UpdateView):
     model = Card
     form_class = CardForm
     template_name = "dashboard/card_form.html"
 
-    # def get(self, request, pk):
-    #     print(request)
-    #     card = Card.objects.get(pk=pk)
-    #     form = CardForm(instance=card, user=request.user)
-    #     return render(request, "dashboard/card_form.html", {"form": form})
-    #
-    # def put(self, request, *args, **kwargs):
-    #     form = CardForm(request.POST)
-    #     card = Card.objects.get(pk=kwargs["pk"])
-
-    # if form.is_valid():
-    #     cd = form.cleaned_data
-    #     description = cd["description"]
-    #     executor_status = request.POST.get("executor", False)
-    #     if executor_status:
-    #         executor = card.creator
-    #     else:
-    #         executor = None
-    #     card["description"] = description
-    #     card["executor"] = executor
-    #     card.save()
-    #     return redirect("dashboard:board")
-    # else:
-    #     return redirect("dashboard:card-create")
-
     def form_valid(self, form):
-        executor_status = self.request.POST.get("executor", False)
         creator = self.object.creator
-
-        if executor_status:
-            executor = creator
+        current_user = self.request.user
+        if current_user == creator:
+            executor_status = self.request.POST.get("executor", False)
+            if executor_status:
+                executor = creator
+            else:
+                executor = None
+            form.instance.executor = executor
+            return super().form_valid(form)
         else:
-            executor = None
-        form.instance.executor = executor
-        return super().form_valid(form)
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     return context
+            raise PermissionDenied()
 
     def get_success_url(self):
         return reverse("dashboard:board")

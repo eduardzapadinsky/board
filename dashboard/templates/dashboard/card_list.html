@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}Board{% endblock %}
-
 {% block content %}
 
     <div class="container">
@@ -34,8 +32,10 @@
                                         <span class="normal-text">executor</span> - {{ card.executor }}
                                     </div>
                                 {% endif %}
+
+                                {# Move card left #}
                                 <div class="position-relative h-100">
-                                    {% if user == card.creator and card.status != "New" and card.status != "Done" or user.is_superuser and card.status == "Done" %}
+                                    {% if user == card.executor and card.status != "New" and card.status != "Done" or user.is_superuser and card.status == "Done" %}
                                         <div class="position-absolute top-left">
                                             <a class="" href="{% url "dashboard:card-move-left" pk=card.id %}">
                                                 <button type="button" class="btn-move btn btn-light">
@@ -49,6 +49,8 @@
                                             </a>
                                         </div>
                                     {% endif %}
+
+                                    {# Update card #}
                                     {% if user == card.creator and card.status != "Done" or user.is_superuser %}
                                         <div class="position-absolute {% if user.is_superuser %}top-center-left{% else %}top-center{% endif %}">
                                             {% if user.is_superuser %}
@@ -62,11 +64,12 @@
                                                      viewBox="0 0 16 16">
                                                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
                                                 </svg>
-
                                             </button>
                                             </a>
                                         </div>
                                     {% endif %}
+
+                                    {# Delete card #}
                                     {% if user.is_superuser %}
                                         <div class="position-absolute top-center-right">
                                             <a class="" href="{% url "dashboard:card-delete" pk=card.id %}">
@@ -76,12 +79,13 @@
                                                         <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
                                                         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
                                                     </svg>
-
                                                 </button>
                                             </a>
                                         </div>
                                     {% endif %}
-                                    {% if user == card.creator and card.status != "Ready" and card.status != "Done" or user.is_superuser and card.status == "Ready" %}
+
+                                    {# Move card right #}
+                                    {% if user == card.executor and card.status != "Ready" and card.status != "Done" or user.is_superuser and card.status == "Ready" %}
                                         <div class="position-absolute top-right">
                                             <a class="" href="{% url "dashboard:card-move-right" pk=card.id %}">
                                                 <button type="button" class="btn-move btn btn-light">
