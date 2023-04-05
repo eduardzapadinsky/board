@@ -35,67 +35,79 @@ class CardListViewAPI(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
 
+    @staticmethod
+    def update_status():
+        response_data = {
+            'success': False,
+            'message': "You can't change status, you are not an 'executor'"
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def update_status_done():
+        response_data = {
+            'success': False,
+            'message': "Status can't be 'Done'"
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def update_status_some():
+        response_data = {
+            'success': False,
+            'message': "Status can be only 'Ready' or 'Done'"
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def update_executor():
+        response_data = {
+            'success': False,
+            'message': "Executor can't be other user"
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def update_without_executor():
+        response_data = {
+            'success': False,
+            'message': "You can't change 'executor'"
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def update_description():
+        response_data = {
+            'success': False,
+            'message': "You can't change 'description'"
+        }
+        return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         current_user = self.request.user
         current_data = request.data
-        response_data = {}
         if instance.creator == current_user and instance.executor == current_user:
             if current_data.get("status") == "Done":
-                response_data = {
-                    'success': False,
-                    'message': "Status can't be 'Done'"
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            elif current_data.get("executor"):
-                if current_data.get("executor") != current_user:
-                    response_data = {
-                        'success': False,
-                        'message': "Executor can't be other user"
-                    }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        if instance.creator == current_user:
+                return self.update_status_done()
+            elif current_data.get("executor") not in [None, current_user.id]:
+                return self.update_executor()
+        if instance.creator == current_user and instance.executor != current_user:
             if current_data.get("status"):
-                response_data = {
-                    'success': False,
-                    'message': "You can't change status, you are not an 'executor'"
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-            elif current_data.get("executor"):
-                if current_data.get("executor") != current_user:
-                    response_data = {
-                        'success': False,
-                        'message': "Executor can't be other user"
-                    }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
-        if instance.executor == current_user:
+                return self.update_status()
+            elif current_data.get("executor") not in [None, current_user.id]:
+                return self.update_executor()
+        if instance.executor == current_user and instance.creator != current_user:
             if current_data.get("status") == "Done":
-                response_data = {
-                    'success': False,
-                    'message': "Status can't be 'Done'"
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return self.update_status_done()
             elif current_data.get("description"):
-                response_data = {
-                    'success': False,
-                    'message': "You can't change 'description'"
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return self.update_description()
             elif current_data.get("executor"):
-                response_data = {
-                    'success': False,
-                    'message': "You can't change 'executor'"
-                }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return self.update_without_executor()
         if current_user.is_superuser:
-            if current_data.get("status"):
-                if current_data.get("status") not in ["Ready", "Done"]:
-                    response_data = {
-                        'success': False,
-                        'message': "Status can be only 'Ready' or 'Done'"
-                    }
-                    return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+            if current_data.get("status") not in ["Ready", "Done"]:
+                return self.update_status_some()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
