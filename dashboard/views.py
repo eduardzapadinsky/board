@@ -4,12 +4,37 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.exceptions import PermissionDenied
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from user.models import UserModel
 from .models import Card
 from .forms import CardForm, CardFormSuperuser
+from .serializers import CardSerializer
+from .permissions import UserPermission, UserReadPermission
 
 CARD_LIST_STATUS = Card.STATUS_CHOICES
+
+
+class CardListViewAPI(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, UserPermission]
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+class CardDetailViewAPI(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, UserReadPermission]
+    serializer_class = CardSerializer
+    queryset = Card.objects.all()
+
+    def get_queryset(self):
+        card_dict_status_name = {i[0].lower(): i[0] for i in CARD_LIST_STATUS}
+        card_status = card_dict_status_name[self.kwargs["status"]]
+        queryset = Card.objects.filter(status=card_status)
+        return queryset
 
 
 class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):

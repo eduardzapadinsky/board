@@ -9,7 +9,7 @@ from .forms import RegistrationForm, LoginForm
 from .serializers import UserSerializer
 
 
-class UserView(viewsets.ModelViewSet):
+class UserViewAPI(viewsets.ModelViewSet):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
 

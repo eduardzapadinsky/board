@@ -20,15 +20,17 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.authtoken import views
 
-from user.views import UserView
+from user.views import UserViewAPI
+from dashboard.views import CardListViewAPI
 
 router = routers.DefaultRouter()
-router.register("user", UserView)
+# router.register("user", UserViewAPI)
+router.register("card", CardListViewAPI)
 
 urlpatterns = [
                   path("admin/", admin.site.urls),
-                  path('api/auth/', views.obtain_auth_token),
-                  path('api/', include(router.urls)),
                   path("", include("user.urls", namespace="user")),
                   path("", include("dashboard.urls", namespace="dashboard")),
+                  path('api/auth/', views.obtain_auth_token),
+                  path('api/', include(router.urls)),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
