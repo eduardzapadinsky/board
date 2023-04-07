@@ -55,6 +55,9 @@ MIDDLEWARE = [
 
     # Middleware to expire sessions after specific amount of time
     # 'board.logout_middleware.SessionTimeoutMiddleware',
+
+    # 'board.logout_middleware.SessionTimeoutMiddleware',
+
 ]
 
 ROOT_URLCONF = 'board.urls'
@@ -147,6 +150,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'board.rest_authentication.SessionTokenAuthentication',
         'board.rest_authentication.ExpiringTokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -156,4 +160,7 @@ REST_FRAMEWORK = {
 }
 
 TOKEN_EXPIRY_TIME = 1
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_SAVE_EVERY_REQUEST = True
 
