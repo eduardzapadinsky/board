@@ -23,6 +23,9 @@ from rest_framework.authtoken import views
 from user.views import UserViewAPI
 from dashboard.views import CardListViewAPI
 
+# from .logout_middleware import CustomAuthToken
+
+
 router = routers.DefaultRouter()
 router.register("user", UserViewAPI)
 router.register("card", CardListViewAPI)
@@ -31,6 +34,7 @@ urlpatterns = [
                   path("admin/", admin.site.urls),
                   path("", include("user.urls", namespace="user")),
                   path("", include("dashboard.urls", namespace="dashboard")),
+                  # path('api/auth/', CustomAuthToken.as_view()),
                   path("api/auth/", views.obtain_auth_token),
                   path("api/", include(router.urls)),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

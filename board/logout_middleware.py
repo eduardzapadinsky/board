@@ -1,4 +1,6 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
+
+from rest_framework.response import Response
 
 
 class SessionTimeoutMiddleware:
@@ -11,3 +13,6 @@ class SessionTimeoutMiddleware:
                 request.session.set_expiry(timedelta(minutes=1))
         response = self.get_response(request)
         return response
+
+
+

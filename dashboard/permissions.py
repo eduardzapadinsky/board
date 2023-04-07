@@ -5,11 +5,11 @@ class UserPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        elif request.method == "DELETE" and not request.user.is_superuser:
-            return False
+        elif request.method == "DELETE" and request.user.is_superuser:
+            return True
         elif request.method == "POST" and request.user.is_superuser:
             return False
-        elif obj.creator == request.user or obj.executor == request.user or request.user.is_superuser:
+        elif request.method == "PATCH" and obj.creator == request.user or obj.executor == request.user or request.user.is_superuser:
             return True
         return False
 
