@@ -6,6 +6,10 @@ from django.utils import timezone
 
 
 class ExpiringTokenAuthentication(TokenAuthentication):
+    """
+    Custom token authentication. Token will be deleted after TOKEN_EXPIRY_TIME
+
+    """
     session_time_list = [timezone.now()]
 
     def authenticate_credentials(self, key):

@@ -10,6 +10,10 @@ from .serializers import UserSerializer
 
 
 class UserViewAPI(viewsets.ModelViewSet):
+    """
+    Get all the users
+
+    """
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
 
@@ -49,6 +53,7 @@ def register(request):
 def login(request):
     """
     Login user
+
     """
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -71,5 +76,6 @@ def login(request):
 class Logout(LogoutView):
     """
     Logout user
+
     """
     next_page = "dashboard:board"

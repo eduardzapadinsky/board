@@ -5,6 +5,7 @@ from .models import UserModel
 class UserSerializer(serializers.ModelSerializer):
     """
     Serializer for user
+
     """
 
     class Meta:

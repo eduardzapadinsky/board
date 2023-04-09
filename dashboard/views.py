@@ -1,11 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.exceptions import PermissionDenied
 from rest_framework import viewsets, status
-from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -18,21 +16,20 @@ from .permissions import UserPermission, UserReadPermission
 CARD_LIST_STATUS = Card.STATUS_CHOICES
 
 
-# class CardListViewAPI(viewsets.ModelViewSet):
-#     permission_classes = [IsAuthenticated, UserPermission]
-#     queryset = Card.objects.all()
-#     serializer_class = CardSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(creator=self.request.user)
-
-
 class CardListViewAPI(viewsets.ModelViewSet):
+    """
+    Manage CRUD operations in REST
+
+    """
     permission_classes = [IsAuthenticated, UserPermission]
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
     def perform_create(self, serializer):
+        """
+        Add user during the card creation
+
+        """
         serializer.save(creator=self.request.user)
 
     @staticmethod
@@ -84,6 +81,10 @@ class CardListViewAPI(viewsets.ModelViewSet):
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
+        """
+        Permissions during card update
+
+        """
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         current_user = self.request.user
@@ -119,11 +120,19 @@ class CardListViewAPI(viewsets.ModelViewSet):
 
 
 class CardDetailViewAPI(viewsets.ModelViewSet):
+    """
+    Show cards according to the status using REST
+
+    """
     permission_classes = [IsAuthenticated, UserReadPermission]
     serializer_class = CardSerializer
     queryset = Card.objects.all()
 
     def get_queryset(self):
+        """
+        Filter cards according to there status
+
+        """
         card_dict_status_name = {i[0].lower(): i[0] for i in CARD_LIST_STATUS}
         card_status = card_dict_status_name[self.kwargs["status"]]
         queryset = Card.objects.filter(status=card_status)
@@ -133,6 +142,7 @@ class CardDetailViewAPI(viewsets.ModelViewSet):
 class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     """
     Superuser-only permission
+
     """
 
     def test_func(self):
@@ -142,6 +152,7 @@ class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
 class SuperuserRestrictedMixin(LoginRequiredMixin, UserPassesTestMixin):
     """
     Deny permission for superuser
+
     """
 
     def test_func(self):
@@ -162,6 +173,10 @@ class CardListView(LoginRequiredMixin, ListView):
 
 
 def card_move(pk):
+    """
+    Base for moving card
+
+    """
     card = Card.objects.get(id=pk)
     card_status = card.status
     card_list_status_name = [i[0] for i in CARD_LIST_STATUS]
@@ -170,6 +185,10 @@ def card_move(pk):
 
 
 def card_move_left(request, pk):
+    """
+    Moving card to the left status
+
+    """
     card, card_status, card_list_status_name, card_status_index = card_move(pk)
     if card_status not in [
         "New", "Done"
@@ -181,6 +200,10 @@ def card_move_left(request, pk):
 
 
 def card_move_right(request, pk, *args):
+    """
+    Moving card to the right status
+
+    """
     card, card_status, card_list_status_name, card_status_index = card_move(pk)
     if card_status not in [
         "Ready", "Done"
@@ -192,6 +215,10 @@ def card_move_right(request, pk, *args):
 
 
 class CardCreateView(SuperuserRestrictedMixin, LoginRequiredMixin, CreateView):
+    """
+    Creating card for common user
+
+    """
     form_class = CardForm
     template_name = "dashboard/card_form.html"
 
@@ -221,6 +248,10 @@ class CardCreateView(SuperuserRestrictedMixin, LoginRequiredMixin, CreateView):
 
 
 class CardUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Updating card for some fields by common user
+
+    """
     model = Card
     form_class = CardForm
     template_name = "dashboard/card_form.html"
@@ -228,6 +259,7 @@ class CardUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         creator = self.object.creator
         current_user = self.request.user
+
         if current_user == creator:
             executor_status = self.request.POST.get("executor", False)
             if executor_status:
@@ -244,6 +276,10 @@ class CardUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class CardUpdateViewSuperuser(SuperuserRequiredMixin, UpdateView):
+    """
+    Updating card by superuser
+
+    """
     model = Card
     form_class = CardFormSuperuser
     template_name = "dashboard/card_form.html"
@@ -253,5 +289,9 @@ class CardUpdateViewSuperuser(SuperuserRequiredMixin, UpdateView):
 
 
 class CardDeleteView(SuperuserRequiredMixin, DeleteView):
+    """
+    Deleting card by superuser
+
+    """
     model = Card
     success_url = reverse_lazy("dashboard:board")

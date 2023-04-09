@@ -7,5 +7,6 @@ from .models import UserModel
 class UserAdmin(admin.ModelAdmin):
     """
     Admin panel: User
+
     """
     list_display = ["id", "username"]
