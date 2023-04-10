@@ -21,7 +21,7 @@ class CardListViewAPI(viewsets.ModelViewSet):
     Manage CRUD operations in REST
 
     """
-    permission_classes = [IsAuthenticated, UserPermission]
+    permission_classes = [UserPermission, IsAuthenticated]
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
@@ -49,7 +49,7 @@ class CardListViewAPI(viewsets.ModelViewSet):
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
-    def update_status_some():
+    def update_status_done_ready():
         response_data = {
             'success': False,
             'message': "Status can be only 'Ready' or 'Done'"
@@ -107,8 +107,8 @@ class CardListViewAPI(viewsets.ModelViewSet):
             elif current_data.get("executor"):
                 return self.update_without_executor()
         if current_user.is_superuser:
-            if current_data.get("status") not in ["Ready", "Done"]:
-                return self.update_status_some()
+            if current_data.get("status") not in ["Ready", "Done"] or instance.status not in ["Ready", "Done"]:
+                return self.update_status_done_ready()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)

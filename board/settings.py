@@ -144,7 +144,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-TOKEN_EXPIRY_TIME = 1
+TOKEN_EXPIRY_TIME = 100
 
 # Sessions
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
