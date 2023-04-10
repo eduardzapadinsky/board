@@ -160,6 +160,10 @@ class SuperuserRestrictedMixin(LoginRequiredMixin, UserPassesTestMixin):
 
 
 class CardListView(LoginRequiredMixin, ListView):
+    """
+    Show list of cards
+
+    """
     model = Card
 
     def get_context_data(self, *args, **kwargs):
@@ -247,7 +251,7 @@ class CardCreateView(SuperuserRestrictedMixin, LoginRequiredMixin, CreateView):
         return redirect("dashboard:board")
 
 
-class CardUpdateView(LoginRequiredMixin, UpdateView):
+class CardUpdateView(SuperuserRestrictedMixin, LoginRequiredMixin, UpdateView):
     """
     Updating card for some fields by common user
 
@@ -264,9 +268,10 @@ class CardUpdateView(LoginRequiredMixin, UpdateView):
             executor_status = self.request.POST.get("executor", False)
             if executor_status:
                 executor = creator
-            else:
+                form.instance.executor = executor
+            elif not executor_status and not self.object.executor:
                 executor = None
-            form.instance.executor = executor
+                form.instance.executor = executor
             return super().form_valid(form)
         else:
             raise PermissionDenied()

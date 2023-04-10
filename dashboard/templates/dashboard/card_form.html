@@ -34,7 +34,7 @@
                                         <div class="form-outline mb-4">
                                             <label for="executor"></label>
                                             <input id="executor" type="checkbox" name="executor" value="executor"
-                                                    {% if object.executor %} checked {% endif %}>
+                                                    {% if object.executor == user %} checked {% endif %}>
                                             I'm the executor
                                         </div>
                                     {% endif %}
