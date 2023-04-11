@@ -13,6 +13,11 @@ from user.models import UserModel
 
 
 class CardListViewTest(TestCase):
+    """
+    Checking list card view
+
+    """
+
     def setUp(self):
         self.user = UserModel.objects.create_user(username="admin1", password="Admin123")
         self.client = Client()
@@ -35,6 +40,11 @@ class CardListViewTest(TestCase):
 
 
 class CardCreateViewTest(TestCase):
+    """
+    Checking cards creating
+
+    """
+
     def setUp(self):
         self.url = reverse('dashboard:card-create')
         self.client = Client()
@@ -105,6 +115,11 @@ class CardCreateViewTest(TestCase):
 
 
 class CardUpdateViewTest(TestCase):
+    """
+    Checking cards updating by user
+
+    """
+
     def setUp(self):
         self.client = Client()
         self.user = UserModel.objects.create_user(username='testuser', password='testpass')
@@ -138,6 +153,11 @@ class CardUpdateViewTest(TestCase):
 
 
 class CardUpdateViewSuperuserTest(TestCase):
+    """
+    Checking cards updating by superuser
+
+    """
+
     def setUp(self):
         self.client = Client()
         self.superuser = UserModel.objects.create_superuser(username='testsuperuser', password='testpass')
@@ -171,6 +191,11 @@ class CardUpdateViewSuperuserTest(TestCase):
 
 
 class CardDeleteViewTest(TestCase):
+    """
+    Checking deleting cards by superuser
+
+    """
+
     def setUp(self):
         self.client = Client()
         self.superuser = UserModel.objects.create_superuser(username='testsuperuser', password='testpass')
@@ -197,6 +222,11 @@ class CardDeleteViewTest(TestCase):
 
 
 class CardMoveLeftTest(TestCase):
+    """
+    Checking moving cards to the left
+
+    """
+
     def setUp(self):
         self.client = Client()
         self.superuser = UserModel.objects.create_superuser(username='testsuperuser', password='testpass')
@@ -254,6 +284,11 @@ class CardMoveLeftTest(TestCase):
 
 
 class CardMoveRightTest(TestCase):
+    """
+    Checking moving cards to the right
+
+    """
+
     def setUp(self):
         self.client = Client()
         self.superuser = UserModel.objects.create_superuser(username='testsuperuser', password='testpass')
@@ -311,6 +346,11 @@ class CardMoveRightTest(TestCase):
 
 
 class CardDetailViewAPITest(TestCase):
+    """
+    Checking detail card view by their status for REST API
+
+    """
+
     def setUp(self):
         self.client = APIClient()
         self.user = UserModel.objects.create(username="testuser", password='testpass')
@@ -328,6 +368,11 @@ class CardDetailViewAPITest(TestCase):
 
 
 class CardListViewAPITestCase(APITestCase):
+    """
+    Checking list card view using REST API
+
+    """
+
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             username='testuser', password='password'
