@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container">
+        {% if not user.is_superuser %}
+            <a class="" href="{% url "dashboard:card-create" %}">
+                <button type="button" class="row btn-add btn btn-light" style="margin-left: -7px">
+                    <div class="card-add container">
+                        <div>
+                            + add card
+                        </div>
+                    </div>
+                </button>
+            </a>
+        {% endif %}
+        <div class="row">
+            {% for card_status, card_status_name in card_list_status %}
+                <div class="dash-title col container">
+                    {{ card_status_name }}
+                    {% for card in card_list %}
+                        {% if card.status == card_status and not card.is_deleted %}
+                            <div class="dash-card container">
+                                <div>
+                                    {{ card.description }}
+                                </div>
+                                <div class="dash-author">
+                                    <span class="normal-text">creator</span> - {{ card.creator }}
+                                </div>
+                                {% if card.executor %}
+                                    <div class="dash-author">
+                                        <span class="normal-text">executor</span> - {{ card.executor }}
+                                    </div>
+                                {% endif %}
+
+                                {# Move card left #}
+                                <div class="position-relative h-100">
+                                    {% if user == card.executor and card.status != "New" and card.status != "Done" or user.is_superuser and card.status == "Done" %}
+                                        <div class="position-absolute top-left">
+                                            <a class="" href="{% url "dashboard:card-move-left" pk=card.id %}">
+                                                <button type="button" class="btn-move btn btn-light">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor" class="bi bi-caret-left"
+                                                         viewBox="0 0 16 16">
+                                                        <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"></path>
+                                                    </svg>
+                                                    move
+                                                </button>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                    {# Update card #}
+                                    {% if user == card.creator and card.status != "Done" or user.is_superuser %}
+                                        <div class="position-absolute {% if user.is_superuser %}top-center-left{% else %}top-center{% endif %}">
+                                            {% if user.is_superuser %}
+                                                <a class="" href="{% url "dashboard:card-full-update" pk=card.id %}">
+                                            {% else %}
+                                                <a class="" href="{% url "dashboard:card-update" pk=card.id %}">
+                                            {% endif %}
+                                            <button type="button" class="btn-move btn btn-light">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                     fill="currentColor" class="bi bi-pencil"
+                                                     viewBox="0 0 16 16">
+                                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
+                                                </svg>
+                                            </button>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                    {# Delete card #}
+                                    {% if user.is_superuser %}
+                                        <div class="position-absolute top-center-right">
+                                            <a class="" href="{% url "dashboard:card-delete" pk=card.id %}">
+                                                <button type="button" class="btn-move btn btn-light">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
+                                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                                    </svg>
+                                                </button>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                    {# Move card right #}
+                                    {% if user == card.executor and card.status != "Ready" and card.status != "Done" or user.is_superuser and card.status == "Ready" %}
+                                        <div class="position-absolute top-right">
+                                            <a class="" href="{% url "dashboard:card-move-right" pk=card.id %}">
+                                                <button type="button" class="btn-move btn btn-light">
+                                                    move
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor" class="bi bi-caret-right"
+                                                         viewBox="0 0 16 16">
+                                                        <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"></path>
+                                                    </svg>
+                                                </button>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

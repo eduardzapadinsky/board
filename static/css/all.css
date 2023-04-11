@@ -1,0 +1,117 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.gradient-custom-3 {
+    /* fallback for old browsers */
+    background: #84fab0;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5))
+}
+
+.gradient-custom-4 {
+    /* fallback for old browsers */
+    background: #84fab0;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1))
+}
+
+.dash-title {
+    background: #e6e6e6;
+    text-align: center;
+    font-size: 15px;
+    color: #383838;
+    font-weight: bold;
+    margin: 5px;
+    padding: 10px 0 20px 0;
+    border-radius: 6px;
+}
+
+.dash-card {
+    background: #f5f5f5;
+    text-align: left;
+    font-size: 13px;
+    font-weight: normal;
+    margin: 5px 0 5px 0;
+    padding: 5px 5px 50px 5px;
+}
+
+.dash-author {
+    color: #757575;;
+    text-align: right;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.btn-move {
+    background: white;
+    font-size: 10px;
+    margin: 15px 0 5px 0;
+    padding: 5px;
+}
+
+.top-left {
+    left: 0;
+}
+
+.top-right {
+    right: 0;
+}
+
+.top-center {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.top-center-left {
+    top: 0;
+    left: 40%;
+    transform: translateX(-40%);
+}
+.top-center-right {
+    top: 0;
+    left: 60%;
+    transform: translateX(-60%);
+}
+
+.bottom-center {
+    bottom: 0;
+    text-align: center;
+    left: 50%;
+}
+
+.btn-add {
+    font-size: 10px;
+    left: 0;
+    right: 0;
+}
+
+.card-add {
+    color: #707070;
+    text-align: left;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 2px;
+}
+
+.normal-text {
+    font-weight: normal;
+}
+
+.bold-text {
+    font-weight: bold;
+}

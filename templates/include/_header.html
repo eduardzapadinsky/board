@@ -1,0 +1,29 @@
+{% load static %}
+
+<div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="{% url "dashboard:board" %}"><i class="fas fa-sign-in-alt"></i>Board</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+            {% if not user.is_authenticated %}
+                <a class="btn {% if "login" in request.path %} btn-primary {% else %} btn-outline-primary me-2 {% endif %}"
+                   href="{% url "user:login" %}">
+                    Log in
+                </a>
+                <a class="btn {% if "register" in request.path %} btn-primary {% else %} btn-outline-primary me-2 {% endif %}"
+                   href="{% url "user:register" %}">
+                    Register
+                </a>
+            {% else %}
+                <a class="btn btn-outline-primary me-2" href="{% url "user:logout" %}">
+                    Logout
+                </a>
+            {% endif %}
+
+        </div>
+    </header>
+</div>
+
