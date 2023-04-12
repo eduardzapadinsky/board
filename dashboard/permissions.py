@@ -15,14 +15,7 @@ class UserPermission(permissions.BasePermission):
         elif request.method == "DELETE" and request.user.is_superuser:
             return True
         elif request.method == "PATCH":
-            print(obj.creator)
-            print(obj.executor)
-            print(request.user)
-            print(obj.creator == request.user)
-            print(obj.executor == request.user)
-            print(request.user.is_superuser)
             if obj.creator == request.user or obj.executor == request.user or request.user.is_superuser:
-                print("yes")
                 return True
         return False
 
